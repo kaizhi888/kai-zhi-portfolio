@@ -65,7 +65,7 @@ const Hero = ({ about }: HeroProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
             >
               Hi, I'm <span className="gradient-text">{about?.name || 'Kai Zhi'}</span>
             </motion.h1>
@@ -88,7 +88,8 @@ const Hero = ({ about }: HeroProps) => {
               {about?.resumeUrl && (
                 <a
                   href={about.resumeUrl}
-                  download="Hiu_Kai_Zhi_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl"
                 >
                   <FiDownload className="mr-2" />
