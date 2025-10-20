@@ -183,7 +183,7 @@ export default function SkillsPage() {
           <div key={category} className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4 capitalize">{category}</h3>
             <div className="space-y-2">
-              {categorySkills.map((skill) => (
+              {(categorySkills as any[]).map((skill: any) => (
                 <div key={skill._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex-1">
                     <span className="font-medium">{skill.name}</span>
