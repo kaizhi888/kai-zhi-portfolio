@@ -10,14 +10,25 @@ import Awards from '@/components/Awards';
 import Events from '@/components/Events';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import dbConnect from '@/lib/mongodb';
+import AboutModel from '@/models/About';
+import ExperienceModel from '@/models/Experience';
+import EducationModel from '@/models/Education';
+import SkillModel from '@/models/Skill';
+import ProjectModel from '@/models/Project';
+import CertificationModel from '@/models/Certification';
+import AwardModel from '@/models/Award';
+import EventModel from '@/models/Event';
+import ContactModel from '@/models/Contact';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 async function getAbout() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/about`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
+    await dbConnect();
+    const about = await AboutModel.findOne().sort({ createdAt: -1 }).lean();
+    return about ? JSON.parse(JSON.stringify(about)) : null;
   } catch (error) {
     console.error('Error fetching about:', error);
     return null;
@@ -26,11 +37,9 @@ async function getAbout() {
 
 async function getExperiences() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/experience`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const experiences = await ExperienceModel.find().sort({ order: 1, startDate: -1 }).lean();
+    return JSON.parse(JSON.stringify(experiences));
   } catch (error) {
     console.error('Error fetching experiences:', error);
     return [];
@@ -39,11 +48,9 @@ async function getExperiences() {
 
 async function getEducation() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/education`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const education = await EducationModel.find().sort({ order: 1, startDate: -1 }).lean();
+    return JSON.parse(JSON.stringify(education));
   } catch (error) {
     console.error('Error fetching education:', error);
     return [];
@@ -52,11 +59,9 @@ async function getEducation() {
 
 async function getSkills() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/skills`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const skills = await SkillModel.find().sort({ category: 1, order: 1 }).lean();
+    return JSON.parse(JSON.stringify(skills));
   } catch (error) {
     console.error('Error fetching skills:', error);
     return [];
@@ -65,11 +70,9 @@ async function getSkills() {
 
 async function getProjects() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/projects`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const projects = await ProjectModel.find().sort({ featured: -1, order: 1 }).lean();
+    return JSON.parse(JSON.stringify(projects));
   } catch (error) {
     console.error('Error fetching projects:', error);
     return [];
@@ -78,11 +81,9 @@ async function getProjects() {
 
 async function getCertifications() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/certifications`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const certifications = await CertificationModel.find().sort({ order: 1, issueDate: -1 }).lean();
+    return JSON.parse(JSON.stringify(certifications));
   } catch (error) {
     console.error('Error fetching certifications:', error);
     return [];
@@ -91,11 +92,9 @@ async function getCertifications() {
 
 async function getAwards() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/awards`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const awards = await AwardModel.find().sort({ order: 1, date: -1 }).lean();
+    return JSON.parse(JSON.stringify(awards));
   } catch (error) {
     console.error('Error fetching awards:', error);
     return [];
@@ -104,11 +103,9 @@ async function getAwards() {
 
 async function getEvents() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/events`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
+    await dbConnect();
+    const events = await EventModel.find().sort({ order: 1, date: -1 }).lean();
+    return JSON.parse(JSON.stringify(events));
   } catch (error) {
     console.error('Error fetching events:', error);
     return [];
@@ -117,11 +114,9 @@ async function getEvents() {
 
 async function getContact() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/contact`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
+    await dbConnect();
+    const contact = await ContactModel.findOne().sort({ createdAt: -1 }).lean();
+    return contact ? JSON.parse(JSON.stringify(contact)) : null;
   } catch (error) {
     console.error('Error fetching contact:', error);
     return null;
