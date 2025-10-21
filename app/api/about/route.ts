@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import dbConnect from '@/lib/mongodb';
 import About from '@/models/About';
-import { uploadImage, deleteImage } from '@/lib/cloudinary';
+import { uploadImage, deleteImage, uploadFile, deleteFile } from '@/lib/cloudinary';
 
 export async function GET() {
   try {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     // Upload resume if provided
     if (data.resumeFile && data.resumeFile.startsWith('data:')) {
-      const uploadResult = await uploadImage(data.resumeFile, 'portfolio/resume');
+      const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
       data.resumeUrl = uploadResult.url;
       data.resumePublicId = uploadResult.publicId;
     }
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         await deleteImage(existingAbout.profileImagePublicId);
       }
       if (data.resumePublicId && existingAbout.resumePublicId) {
-        await deleteImage(existingAbout.resumePublicId);
+        await deleteFile(existingAbout.resumePublicId);
       }
 
       Object.assign(existingAbout, data);
@@ -92,9 +92,9 @@ export async function PUT(req: Request) {
     // Upload resume if new one provided
     if (data.resumeFile && data.resumeFile.startsWith('data:')) {
       if (existingAbout.resumePublicId) {
-        await deleteImage(existingAbout.resumePublicId);
+        await deleteFile(existingAbout.resumePublicId);
       }
-      const uploadResult = await uploadImage(data.resumeFile, 'portfolio/resume');
+      const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
       data.resumeUrl = uploadResult.url;
       data.resumePublicId = uploadResult.publicId;
     }
