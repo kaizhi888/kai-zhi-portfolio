@@ -20,14 +20,11 @@ const Hero = ({ about }: HeroProps) => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Convert Cloudinary URL to force download
+  // Use API endpoint to download resume
   const getDownloadUrl = (url: string) => {
     if (!url) return url;
-    // Add fl_attachment flag to force download
-    if (url.includes('cloudinary.com')) {
-      return url.replace('/upload/', '/upload/fl_attachment/');
-    }
-    return url;
+    // Use our API endpoint to serve the PDF
+    return '/api/download-resume';
   };
 
   return (
