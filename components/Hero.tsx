@@ -20,6 +20,16 @@ const Hero = ({ about }: HeroProps) => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Convert Cloudinary URL to force download
+  const getDownloadUrl = (url: string) => {
+    if (!url) return url;
+    // Add fl_attachment flag to force download
+    if (url.includes('cloudinary.com')) {
+      return url.replace('/upload/', '/upload/fl_attachment/');
+    }
+    return url;
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50 pt-16">
       {/* Aurora Background */}
@@ -87,9 +97,8 @@ const Hero = ({ about }: HeroProps) => {
             >
               {about?.resumeUrl && (
                 <a
-                  href={about.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={getDownloadUrl(about.resumeUrl)}
+                  download="Hiu_Kai_Zhi_Resume.pdf"
                   className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl"
                 >
                   <FiDownload className="mr-2" />
