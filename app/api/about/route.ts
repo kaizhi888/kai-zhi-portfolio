@@ -32,11 +32,18 @@ export async function POST(req: Request) {
       data.profileImagePublicId = uploadResult.publicId;
     }
 
-    // Upload resume if provided
-    if (data.resumeFile && data.resumeFile.startsWith('data:')) {
-      const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
-      data.resumeUrl = uploadResult.url;
-      data.resumePublicId = uploadResult.publicId;
+    // Upload resume if provided (base64 file), or use direct URL if provided
+    if (data.resumeFile) {
+      if (data.resumeFile.startsWith('data:')) {
+        // It's a file upload
+        const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
+        data.resumeUrl = uploadResult.url;
+        data.resumePublicId = uploadResult.publicId;
+      } else if (data.resumeFile.startsWith('http')) {
+        // It's a direct URL (Google Drive, etc.)
+        data.resumeUrl = data.resumeFile;
+        // Don't set resumePublicId for external URLs
+      }
     }
 
     // Check if about already exists
@@ -89,14 +96,25 @@ export async function PUT(req: Request) {
       data.profileImagePublicId = uploadResult.publicId;
     }
 
-    // Upload resume if new one provided
-    if (data.resumeFile && data.resumeFile.startsWith('data:')) {
-      if (existingAbout.resumePublicId) {
-        await deleteFile(existingAbout.resumePublicId);
+    // Upload resume if new one provided (base64 file), or use direct URL if provided
+    if (data.resumeFile) {
+      if (data.resumeFile.startsWith('data:')) {
+        // It's a file upload
+        if (existingAbout.resumePublicId) {
+          await deleteFile(existingAbout.resumePublicId);
+        }
+        const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
+        data.resumeUrl = uploadResult.url;
+        data.resumePublicId = uploadResult.publicId;
+      } else if (data.resumeFile.startsWith('http')) {
+        // It's a direct URL (Google Drive, etc.)
+        // Delete old Cloudinary file if it exists
+        if (existingAbout.resumePublicId) {
+          await deleteFile(existingAbout.resumePublicId);
+        }
+        data.resumeUrl = data.resumeFile;
+        data.resumePublicId = null; // Clear publicId for external URLs
       }
-      const uploadResult = await uploadFile(data.resumeFile, 'portfolio/resume');
-      data.resumeUrl = uploadResult.url;
-      data.resumePublicId = uploadResult.publicId;
     }
 
     Object.assign(existingAbout, data);

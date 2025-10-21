@@ -20,10 +20,15 @@ const Hero = ({ about }: HeroProps) => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Use API endpoint to download resume
+  // Handle resume download - use direct URL if it's from external source (Google Drive, etc.)
+  // Otherwise use API endpoint for Cloudinary files
   const getDownloadUrl = (url: string) => {
     if (!url) return url;
-    // Use our API endpoint to serve the PDF
+    // If it's a Google Drive link or other external URL, use it directly
+    if (url.includes('drive.google.com') || url.includes('dropbox.com') || !url.includes('cloudinary.com')) {
+      return url;
+    }
+    // For Cloudinary links, use our API endpoint to bypass access issues
     return '/api/download-resume';
   };
 

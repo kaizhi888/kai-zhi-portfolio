@@ -7,6 +7,7 @@ import ImageUpload from '@/components/admin/ImageUpload';
 export default function AboutPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [useResumeUrl, setUseResumeUrl] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     tagline: '',
@@ -113,12 +114,65 @@ export default function AboutPage() {
           onImageChange={(image) => setFormData({ ...formData, profileImage: image || '' })}
         />
 
-        <ImageUpload
-          label="Resume (PDF)"
-          currentImage={formData.resumeFile}
-          onImageChange={(file) => setFormData({ ...formData, resumeFile: file || '' })}
-          accept="application/pdf,.pdf"
-        />
+        {/* Resume Section with Toggle */}
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">Resume (PDF)</label>
+          
+          {/* Toggle between URL and File Upload */}
+          <div className="flex gap-4 mb-4">
+            <button
+              type="button"
+              onClick={() => setUseResumeUrl(true)}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                useResumeUrl
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              📎 Use URL Link
+            </button>
+            <button
+              type="button"
+              onClick={() => setUseResumeUrl(false)}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                !useResumeUrl
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              📁 Upload File
+            </button>
+          </div>
+
+          {useResumeUrl ? (
+            <div>
+              <label className="block text-sm text-gray-600 mb-2">
+                Paste Google Drive or any direct download link:
+              </label>
+              <input
+                type="url"
+                value={formData.resumeFile}
+                onChange={(e) => setFormData({ ...formData, resumeFile: e.target.value })}
+                placeholder="https://drive.google.com/uc?export=download&id=YOUR_FILE_ID"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+              <p className="mt-2 text-xs text-gray-500">
+                💡 For Google Drive: Share your PDF → Copy link → Convert to direct download format:
+                <br />
+                <code className="bg-gray-100 px-2 py-1 rounded">
+                  https://drive.google.com/uc?export=download&id=YOUR_FILE_ID
+                </code>
+              </p>
+            </div>
+          ) : (
+            <ImageUpload
+              label=""
+              currentImage={formData.resumeFile}
+              onImageChange={(file) => setFormData({ ...formData, resumeFile: file || '' })}
+              accept="application/pdf,.pdf"
+            />
+          )}
+        </div>
 
         <button
           type="submit"
